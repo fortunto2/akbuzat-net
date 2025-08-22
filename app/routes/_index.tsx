@@ -31,35 +31,35 @@ export default function Index() {
 	const { data } = useUserMetadata(username)
 
 	return (
-		<div className="flex flex-col items-center justify-center h-full p-4 mx-auto">
-			<div className="flex-1 flex flex-col items-center justify-center">
+		<div className="flex flex-col h-full items-center justify-center gap-8 px-4 max-w-md mx-auto">
+			<div className="flex flex-col items-center">
 				<img 
 					src="/logo.svg" 
 					alt="Akbuzat.net" 
-					className="w-40 h-40 object-contain"
+					className="w-32 h-32 object-contain"
 				/>
 				<h1 className="text-2xl font-bold text-center mt-2 text-green-700">Akbuzat.net</h1>
 			</div>
-			<div className="space-y-6 sm:min-w-96">
-				<div>
-					<div className="flex items-center justify-between gap-3">
+			
+			<div className="w-full space-y-6">
+				<div className="text-center">
+					<div className="flex items-center justify-center gap-3 mb-4">
 						<p className="text-sm text-zinc-500">
 							Вы вошли как {data?.displayName}
 						</p>
 						{!usedAccess && (
 							<a
-								className="block text-sm underline text-zinc-500 hover:text-zinc-700"
+								className="text-sm underline text-zinc-500 hover:text-zinc-700"
 								href="/set-username"
 							>
 								Изменить
 							</a>
 						)}
 					</div>
-				</div>
-				<div>
+					
 					<ButtonLink
 						to="/new"
-						className="text-sm"
+						className="text-sm px-8 py-3 w-full"
 						onClick={(e) => {
 							// We shouldn't need a whole server visit to start a new room,
 							// so let's just do a redirect here
@@ -73,30 +73,32 @@ export default function Index() {
 						Новая комната
 					</ButtonLink>
 				</div>
+				
 				<details className="cursor-pointer">
-					<summary className="text-zinc-500">
+					<summary className="text-zinc-500 text-center text-sm">
 						Или присоединиться к комнате
 					</summary>
 					<Form
-						className="grid items-end gap-4 grid-cols-[1fr_auto] w-full pt-4"
+						className="flex flex-col gap-4 w-full pt-4"
 						method="post"
 					>
 						<div className="space-y-2">
-							<Label htmlFor="room">Название комнаты</Label>
-							<Input name="room" id="room" required />
+							<Label htmlFor="room" className="block text-center text-gray-700">Название комнаты</Label>
+							<Input name="room" id="room" required className="text-center" />
 						</div>
-						<Button className="text-xs" type="submit" displayType="secondary">
+						<Button className="text-sm px-6 py-2" type="submit" displayType="secondary">
 							Войти
 						</Button>
 					</Form>
 				</details>
 			</div>
-			<div className="flex flex-col justify-end flex-1">
-				<div className="max-w-2xl mx-auto mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-600">
+			
+			<div className="w-full mt-8">
+				<div className="mx-auto p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-600">
 					<div className="text-center space-y-2">
 						<p className="font-medium text-green-700">🔒 Безопасные видеозвонки для друзей</p>
 						<p>Некоммерческий проект • Звонки не записываются • P2P соединения с шифрованием</p>
-						<div className="flex flex-wrap justify-center gap-4 text-xs mt-3">
+						<div className="flex flex-wrap justify-center gap-3 text-xs mt-3">
 							<span className="flex items-center gap-1">
 								<span className="w-2 h-2 bg-green-500 rounded-full"></span>
 								Без регистрации
@@ -118,7 +120,7 @@ export default function Index() {
 						</div>
 					</div>
 				</div>
-				<Disclaimer className="pt-6" />
+				<Disclaimer className="pt-4 text-center" />
 			</div>
 		</div>
 	)

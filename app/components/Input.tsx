@@ -10,13 +10,13 @@ export const Input = forwardRef<
 			'w-full',
 			'rounded',
 			'border-2',
-			'border-zinc-500',
+			'border-zinc-300',
 			'text-zinc-900',
-			'dark:text-zinc-50',
-			'bg-zinc-50',
-			'dark:bg-zinc-700',
+			'bg-white',
 			'px-2',
 			'py-1',
+			'focus:border-green-500',
+			'focus:outline-none',
 			className
 		)}
 		{...rest}

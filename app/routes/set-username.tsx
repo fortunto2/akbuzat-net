@@ -21,7 +21,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function SetUsername() {
 	return (
-		<div className="grid h-full gap-4 place-content-center">
+		<div className="flex flex-col h-full items-center justify-center gap-8 px-4">
 			<div className="flex flex-col items-center">
 				<img 
 					src="/logo.svg" 
@@ -30,9 +30,12 @@ export default function SetUsername() {
 				/>
 				<h1 className="text-2xl font-bold text-center mt-2 text-green-700">Akbuzat.net</h1>
 			</div>
-			<Form className="flex items-end gap-4" method="post">
-				<div className="grid gap-3">
-					<label htmlFor="username">Введите ваше отображаемое имя</label>
+			
+			<Form className="flex flex-col items-center gap-4 w-full max-w-sm" method="post">
+				<div className="w-full">
+					<label htmlFor="username" className="block text-center text-gray-700 mb-3">
+						Введите ваше отображаемое имя
+					</label>
 					<Input
 						autoComplete="off"
 						autoFocus
@@ -40,9 +43,10 @@ export default function SetUsername() {
 						type="text"
 						id="username"
 						name="username"
+						className="text-center"
 					/>
 				</div>
-				<Button className="text-xs" type="submit">
+				<Button className="text-sm px-6 py-2" type="submit">
 					Отправить
 				</Button>
 			</Form>
