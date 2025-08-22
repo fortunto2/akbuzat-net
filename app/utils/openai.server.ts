@@ -139,7 +139,19 @@ export async function requestOpenAIService(
 ): Promise<SessionDescription> {
 	console.log(`Request to: ${openAiModelEndpoint}`)
 	const endpointURL = new URL(openAiModelEndpoint)
-	endpointURL.search = searchParams?.toString() ?? ''
+	
+	// For Azure OpenAI, remove the 'model' parameter as it's already in the URL path
+	if (openAiModelEndpoint.includes('azure.com') && searchParams) {
+		const filteredParams = new URLSearchParams()
+		for (const [key, value] of searchParams) {
+			if (key !== 'model') {
+				filteredParams.set(key, value)
+			}
+		}
+		endpointURL.search = filteredParams.toString()
+	} else {
+		endpointURL.search = searchParams?.toString() ?? ''
+	}
 	const response = await fetch(endpointURL.href, {
 		method: 'POST',
 		body: offer.sdp,

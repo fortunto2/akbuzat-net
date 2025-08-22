@@ -6,13 +6,13 @@ import { cn } from '~/utils/style'
 const displayTypeMap = {
 	primary: [
 		'text-white',
-		'bg-orange-500 hover:bg-orange-600 active:bg-orange-700 active:bg-orange-800',
-		'border-orange-500 hover:border-orange-600 active:border-orange-700 active:border-orange-800',
+		'bg-green-600 hover:bg-green-700 active:bg-green-800',
+		'border-green-600 hover:border-green-700 active:border-green-800',
 	],
 	secondary: [
-		'text-zinc-900 dark:text-zinc-100',
-		'bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600 active:bg-zinc-400 dark:active:bg-zinc-700',
-		'border-zinc-200 hover:border-zinc-300 dark:border-zinc-700 dark:hover:border-zinc-600',
+		'text-zinc-900',
+		'bg-zinc-200 hover:bg-zinc-300 active:bg-zinc-400',
+		'border-zinc-200 hover:border-zinc-300',
 	],
 	ghost: [
 		'text-white hover:text-zinc-900',

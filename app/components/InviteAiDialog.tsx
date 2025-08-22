@@ -50,7 +50,7 @@ export function InviteAiDialog(props: { children?: ReactNode }) {
 						<div className="flex flex-col gap-2">
 							<div>
 								<label className="font-medium" htmlFor="instructions">
-									Instructions
+									Инструкции
 								</label>
 							</div>
 
@@ -62,7 +62,7 @@ export function InviteAiDialog(props: { children?: ReactNode }) {
 									rows={15}
 									defaultValue={
 										instructions ??
-										`You are a helpful and concise AI assistant for a video chat application called Orange Meets.`
+										`Вы полезный и краткий ИИ-помощник для видеочат-приложения Akbuzat.net.`
 									}
 								/>
 							</div>
@@ -70,7 +70,7 @@ export function InviteAiDialog(props: { children?: ReactNode }) {
 						<div className="flex flex-col gap-2">
 							<div>
 								<label className="font-medium" htmlFor="voice">
-									Voice
+									Голос
 								</label>
 							</div>
 
@@ -91,7 +91,7 @@ export function InviteAiDialog(props: { children?: ReactNode }) {
 						</div>
 
 						<Button type="submit" className="self-end text-xs">
-							Invite AI
+							Пригласить ИИ
 						</Button>
 					</form>
 				</DialogContent>

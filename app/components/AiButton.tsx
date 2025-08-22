@@ -56,7 +56,7 @@ export function AiButton(props: { recordActivity: (user: User) => void }) {
 							className="text-xs flex items-center gap-2"
 							disabled={connectionPending}
 						>
-							<span>Invite AI</span>
+							<span>Пригласить ИИ</span>
 						</Button>
 					</Trigger>
 				</InviteAiDialog>

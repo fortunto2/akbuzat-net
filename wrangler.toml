@@ -8,10 +8,12 @@ compatibility_flags = ["nodejs_compat"]
   bucket = "./public"
 
 [vars]
-CALLS_APP_ID = "YOUR_CALLS_SFU_APP_ID_HERE"
+CALLS_APP_ID="8b3c860a2c29fa281ea5cb516dc53852"
+TURN_SERVICE_ID="ec8a2466dbb8c53ed09435c7015a3928"
 
 # Optional vars
-# OPENAI_MODEL_ENDPOINT = ""
+#OPENAI_MODEL_ENDPOINT="https://info-m1wjhthz-eastus2.openai.azure.com/openai/deployments/gpt-4o-realtime-preview/realtime?api-version=2024-10-01-preview"
+#OPENAI_MODEL_ID="gpt-4o-realtime-preview"
 
 [[durable_objects.bindings]]
 name = "rooms"
@@ -20,11 +22,8 @@ class_name = "ChatRoom"
 # Indicate that you want the ChatRoom class to be callable as Durable Objects.
 [[migrations]]
 tag = "v1" # Should be unique for each entry
-new_classes = ["ChatRoom"]
+new_sqlite_classes = ["ChatRoom"]
 
 # The necessary secrets are:
 # - CALLS_APP_SECRET
 # To add secret, run `echo <VALUE> | wrangler secret put <NAME>`
-
-# Optional secrets:
-# OPENAI_API_TOKEN = ""

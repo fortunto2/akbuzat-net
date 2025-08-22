@@ -32,20 +32,26 @@ export default function Index() {
 
 	return (
 		<div className="flex flex-col items-center justify-center h-full p-4 mx-auto">
-			<div className="flex-1"></div>
+			<div className="flex-1 flex flex-col items-center justify-center">
+				<img 
+					src="/logo.svg" 
+					alt="Akbuzat.net" 
+					className="w-40 h-40 object-contain"
+				/>
+				<h1 className="text-2xl font-bold text-center mt-2 text-green-700">Akbuzat.net</h1>
+			</div>
 			<div className="space-y-6 sm:min-w-96">
 				<div>
-					<h1 className="text-3xl font-bold">🍊 Orange Meets</h1>
 					<div className="flex items-center justify-between gap-3">
-						<p className="text-sm text-zinc-500 dark:text-zinc-400">
-							Logged in as {data?.displayName}
+						<p className="text-sm text-zinc-500">
+							Вы вошли как {data?.displayName}
 						</p>
 						{!usedAccess && (
 							<a
-								className="block text-sm underline text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+								className="block text-sm underline text-zinc-500 hover:text-zinc-700"
 								href="/set-username"
 							>
-								Change
+								Изменить
 							</a>
 						)}
 					</div>
@@ -64,28 +70,52 @@ export default function Index() {
 							// (in new.tsx) to send the user to a new room
 						}}
 					>
-						New Room
+						Новая комната
 					</ButtonLink>
 				</div>
 				<details className="cursor-pointer">
-					<summary className="text-zinc-500 dark:text-zinc-400">
-						Or join a room
+					<summary className="text-zinc-500">
+						Или присоединиться к комнате
 					</summary>
 					<Form
 						className="grid items-end gap-4 grid-cols-[1fr_auto] w-full pt-4"
 						method="post"
 					>
 						<div className="space-y-2">
-							<Label htmlFor="room">Room name</Label>
+							<Label htmlFor="room">Название комнаты</Label>
 							<Input name="room" id="room" required />
 						</div>
 						<Button className="text-xs" type="submit" displayType="secondary">
-							Join
+							Войти
 						</Button>
 					</Form>
 				</details>
 			</div>
 			<div className="flex flex-col justify-end flex-1">
+				<div className="max-w-2xl mx-auto mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-600">
+					<div className="text-center space-y-2">
+						<p className="font-medium text-green-700">🔒 Безопасные видеозвонки для друзей</p>
+						<p>Некоммерческий проект • Звонки не записываются • P2P соединения с шифрованием</p>
+						<div className="flex flex-wrap justify-center gap-4 text-xs mt-3">
+							<span className="flex items-center gap-1">
+								<span className="w-2 h-2 bg-green-500 rounded-full"></span>
+								Без регистрации
+							</span>
+							<span className="flex items-center gap-1">
+								<span className="w-2 h-2 bg-green-500 rounded-full"></span>
+								E2E шифрование
+							</span>
+							<span className="flex items-center gap-1">
+								<span className="w-2 h-2 bg-green-500 rounded-full"></span>
+								Низкая задержка
+							</span>
+							<span className="flex items-center gap-1">
+								<span className="w-2 h-2 bg-green-500 rounded-full"></span>
+								Cloudflare
+							</span>
+						</div>
+					</div>
+				</div>
 				<Disclaimer className="pt-6" />
 			</div>
 		</div>

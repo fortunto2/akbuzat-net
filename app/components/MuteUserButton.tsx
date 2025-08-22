@@ -25,11 +25,11 @@ export const MuteUserButton: FC<MuteUserButtonProps> = ({
 
 	if (user.tracks.audioUnavailable) {
 		return (
-			<Tooltip content="Mic is unavailable. User cannot unmute.">
+			<Tooltip content="Микрофон недоступен. Пользователь не может включить звук.">
 				<Button disabled displayType="secondary">
 					<Icon type="micOff" className="text-red-700 dark:text-red-400" />
 					<VisuallyHidden>
-						User's mic is unavailable, cannot unmute.
+						Микрофон пользователя недоступен, невозможно включить звук.
 					</VisuallyHidden>
 				</Button>
 			</Tooltip>
@@ -39,7 +39,7 @@ export const MuteUserButton: FC<MuteUserButtonProps> = ({
 	return (
 		<AlertDialog.Root>
 			{user.tracks.audioEnabled ? (
-				<Tooltip content={`Mute ${data?.displayName}`}>
+				<Tooltip content={`Заглушить ${data?.displayName}`}>
 					<AlertDialog.Trigger asChild>
 						<Button
 							displayType={displayType}
@@ -50,7 +50,7 @@ export const MuteUserButton: FC<MuteUserButtonProps> = ({
 					</AlertDialog.Trigger>
 				</Tooltip>
 			) : (
-				<Tooltip content="Cannot unmute">
+				<Tooltip content="Невозможно включить звук">
 					<Button displayType={mutedDisplayType} disabled>
 						<Icon type="micOff" />
 					</Button>

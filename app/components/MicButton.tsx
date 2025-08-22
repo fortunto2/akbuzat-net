@@ -49,7 +49,7 @@ export const MicButton: FC<
 			<Tooltip
 				content={
 					audioUnavailableMessage ??
-					`Turn mic ${audioEnabled ? 'off' : 'on'} (${metaKey}D)`
+					`${audioEnabled ? 'Выключить' : 'Включить'} микрофон (${metaKey}D)`
 				}
 			>
 				<Button
@@ -62,7 +62,7 @@ export const MicButton: FC<
 					{...rest}
 				>
 					<VisuallyHidden>
-						{audioEnabled ? 'Turn mic off' : 'Turn mic on'}
+						{audioEnabled ? 'Выключить микрофон' : 'Включить микрофон'}
 					</VisuallyHidden>
 					<Icon type={audioEnabled ? 'micOn' : 'micOff'} />
 				</Button>
@@ -73,14 +73,14 @@ export const MicButton: FC<
 					open
 					type="foreground"
 				>
-					<Toast.Title className="ToastTitle">Talking while muted?</Toast.Title>
+					<Toast.Title className="ToastTitle">Говорите с выключенным микрофоном?</Toast.Title>
 					<Toast.Action
 						className="ToastAction"
 						asChild
-						altText="Unmute to talk"
+						altText="Включить микрофон"
 					>
 						<Button displayType="danger" onClick={toggle}>
-							<VisuallyHidden>Turn mic on</VisuallyHidden>
+							<VisuallyHidden>Включить микрофон</VisuallyHidden>
 							<Icon type="micOff" />
 						</Button>
 					</Toast.Action>

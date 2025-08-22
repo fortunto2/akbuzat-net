@@ -70,8 +70,8 @@ export default function Lobby() {
 					<h1 className="text-3xl font-bold">{roomName}</h1>
 					<p className="text-sm text-zinc-500 dark:text-zinc-400">
 						{`${joinedUsers} ${
-							joinedUsers === 1 ? 'user' : 'users'
-						} in the room.`}{' '}
+							joinedUsers === 1 ? 'пользователь' : 'пользователей'
+						} в комнате.`}{' '}
 					</p>
 				</div>
 				<div className="relative">
@@ -89,10 +89,10 @@ export default function Lobby() {
 									{audioEnabled ? (
 										<AudioIndicator audioTrack={audioStreamTrack} />
 									) : (
-										<Tooltip content="Mic is turned off">
+										<Tooltip content="Микрофон выключен">
 											<div className="text-white indication-shadow">
 												<Icon type="micOff" />
-												<VisuallyHidden>Mic is turned off</VisuallyHidden>
+												<VisuallyHidden>Микрофон выключен</VisuallyHidden>
 											</div>
 										</Tooltip>
 									)}
@@ -111,37 +111,37 @@ export default function Lobby() {
 					<div className="p-3 rounded-md text-sm text-zinc-800 bg-zinc-200 dark:text-zinc-200 dark:bg-zinc-700">
 						{userMedia.audioUnavailableReason === 'NotAllowedError' &&
 							userMedia.videoUnavailableReason === undefined && (
-								<p>Mic permission was denied.</p>
+								<p>Доступ к микрофону запрещен.</p>
 							)}
 						{userMedia.videoUnavailableReason === 'NotAllowedError' &&
 							userMedia.audioUnavailableReason === undefined && (
-								<p>Camera permission was denied.</p>
+								<p>Доступ к камере запрещен.</p>
 							)}
 						{userMedia.audioUnavailableReason === 'NotAllowedError' &&
 							userMedia.videoUnavailableReason === 'NotAllowedError' && (
-								<p>Mic and camera permissions were denied.</p>
+								<p>Доступ к микрофону и камере запрещен.</p>
 							)}
 						{userMedia.audioUnavailableReason === 'NotAllowedError' && (
 							<p>
-								Enable permission
+								Разрешите доступ
 								{userMedia.audioUnavailableReason &&
 								userMedia.videoUnavailableReason
-									? 's'
+									? ''
 									: ''}{' '}
-								and reload the page to join.
+								и перезагрузите страницу для входа.
 							</p>
 						)}
 						{userMedia.audioUnavailableReason === 'DevicesExhaustedError' && (
-							<p>No working microphone found.</p>
+							<p>Рабочий микрофон не найден.</p>
 						)}
 						{userMedia.videoUnavailableReason === 'DevicesExhaustedError' && (
-							<p>No working webcam found.</p>
+							<p>Рабочая веб-камера не найдена.</p>
 						)}
 						{userMedia.audioUnavailableReason === 'UnknownError' && (
-							<p>Unknown microphone error.</p>
+							<p>Неизвестная ошибка микрофона.</p>
 						)}
 						{userMedia.videoUnavailableReason === 'UnknownError' && (
-							<p>Unknown webcam error.</p>
+							<p>Неизвестная ошибка веб-камеры.</p>
 						)}
 					</div>
 				)}
@@ -158,12 +158,12 @@ export default function Lobby() {
 						}}
 						disabled={!session?.sessionId}
 					>
-						Join
+						Войти
 					</Button>
 					<MicButton />
 					<CameraButton />
 					<SettingsButton />
-					<Tooltip content="Copy URL">
+					<Tooltip content="Копировать URL">
 						<CopyButton contentValue={roomUrl}></CopyButton>
 					</Tooltip>
 				</div>

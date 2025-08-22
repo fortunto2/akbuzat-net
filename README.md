@@ -1,75 +1,118 @@
-# Welcome to Orange Meets
+# Akbuzat.net
 
-Orange Meets is a demo application built using [Cloudflare Calls](https://developers.cloudflare.com/calls/). To build your own WebRTC application using Cloudflare Calls, get started in the [Cloudflare Dashboard](https://dash.cloudflare.com/?to=/:account/calls).
+🔒 **Безопасные видеозвонки для друзей**
 
-Simpler examples can be found [here](https://github.com/cloudflare/calls-examples).
+Некоммерческий проект для защищенных видеозвонков с друзьями и семьей. Основан на [Cloudflare Orange](https://github.com/cloudflare/orange).
 
-[Try the demo here!](https://demo.orange.cloudflare.dev)
+## ✨ Особенности
 
-![A screenshot showing a room in Orange Meets](orange-meets.png)
+- 🚀 **Без регистрации** - создавайте комнаты мгновенно
+- 🔐 **E2E шифрование** - ваши разговоры защищены
+- ⚡ **Низкая задержка** - качественная связь через Cloudflare
+- 🤖 **ИИ-помощник** - пригласите ИИ в разговор
+- 🌐 **P2P соединения** - прямое подключение между участниками
+- 📱 **Адаптивный дизайн** - работает на всех устройствах
 
-## Architecture Diagram
+## 🚀 Быстрый старт
 
-![Diagram of Orange Meets architecture](architecture.png)
+### Локальная разработка
 
-## Variables
-
-Go to the [Cloudflare Calls dashboard](https://dash.cloudflare.com/?to=/:account/calls) and create an application.
-
-Put these variables into `.dev.vars`
-
+1. Клонируйте репозиторий:
+```bash
+git clone https://github.com/fortunto2/akbuzat-net.git
+cd akbuzat-net
 ```
-CALLS_APP_ID=<APP_ID_GOES_HERE>
-CALLS_APP_SECRET=<SECRET_GOES_HERE>
-```
 
-### Optional variables
-
-The following variables are optional:
-
-- `MAX_WEBCAM_BITRATE` (default `1200000`): the maximum bitrate for each meeting participant's webcam.
-- `MAX_WEBCAM_FRAMERATE` (default: `24`): the maximum number of frames per second for each meeting participant's webcam.
-- `MAX_WEBCAM_QUALITY_LEVEL` (default `1080`): the maximum resolution for each meeting participant's webcam, based on the smallest dimension (i.e. the default is 1080p).
-
-To customise these variables, place replacement values in `.dev.vars` (for development) and in the `[vars]` section of `wrangler.toml` (for the deployment).
-
-## Development
-
-```sh
+2. Установите зависимости:
+```bash
 npm install
+```
+
+3. Создайте файл `.dev.vars` с вашими Cloudflare Calls переменными:
+```bash
+CALLS_APP_ID=your_app_id_here
+CALLS_APP_SECRET=your_secret_here
+TURN_SERVICE_ID=your_turn_service_id_here
+TURN_SERVICE_TOKEN=your_turn_token_here
+```
+
+4. Запустите разработку:
+```bash
 npm run dev
 ```
 
-Open up [http://127.0.0.1:8787](http://127.0.0.1:8787) and you should be ready to go!
+Откройте http://127.0.0.1:8787
 
-## Deployment
+### Деплой
 
-1. Make sure you've installed `wrangler` and are logged in by running:
-
-```sh
+1. Войдите в Wrangler:
+```bash
 wrangler login
 ```
 
-2. Update `CALLS_APP_ID` in `wrangler.toml` to use your own Calls App ID
+2. Обновите `CALLS_APP_ID` и `TURN_SERVICE_ID` в `wrangler.toml`
 
-3. You will also need to set the token as a secret by running:
-
-```sh
+3. Установите секреты:
+```bash
 wrangler secret put CALLS_APP_SECRET
+wrangler secret put TURN_SERVICE_TOKEN
 ```
 
-or to programmatically set the secret, run:
-
-```sh
-echo REPLACE_WITH_YOUR_SECRET | wrangler secret put CALLS_APP_SECRET
-```
-
-4. Optionally, you can also use [Cloudflare's TURN Service](https://developers.cloudflare.com/calls/turn/) by setting the `TURN_SERVICE_ID` variable in `wrangler.toml` and `TURN_SERVICE_TOKEN` secret using `wrangler secret put TURN_SERVICE_TOKEN`
-
-5. Also optionally, you can include `OPENAI_MODEL_ENDPOINT` and `OPENAI_API_TOKEN` to use OpenAI's [Realtime API with WebRTC](https://platform.openai.com/docs/guides/realtime-webrtc) to [invite AI](https://www.youtube.com/watch?v=AzMpyAbZfZQ) to join your meeting.
-
-6. Finally you can run the following to deploy:
-
-```sh
+4. Задеплойте:
+```bash
 npm run deploy
 ```
+
+## 🛠 Технологии
+
+- **Frontend**: React, Remix, TypeScript, Tailwind CSS
+- **Backend**: Cloudflare Workers, Durable Objects
+- **WebRTC**: Cloudflare Calls API
+- **ИИ**: OpenAI Realtime API
+- **Шифрование**: MLS (Message Layer Security)
+
+## 📋 Переменные окружения
+
+### Обязательные
+- `CALLS_APP_ID` - ID приложения Cloudflare Calls
+- `CALLS_APP_SECRET` - Секрет приложения Cloudflare Calls
+
+### Опциональные
+- `TURN_SERVICE_ID` - ID TURN сервиса Cloudflare
+- `TURN_SERVICE_TOKEN` - Токен TURN сервиса
+- `OPENAI_MODEL_ENDPOINT` - Endpoint для OpenAI Realtime API
+- `OPENAI_API_TOKEN` - API токен OpenAI
+- `MAX_WEBCAM_BITRATE` - Максимальный битрейт веб-камеры (по умолчанию: 1200000)
+- `MAX_WEBCAM_FRAMERATE` - Максимальный FPS веб-камеры (по умолчанию: 24)
+- `MAX_WEBCAM_QUALITY_LEVEL` - Максимальное разрешение (по умолчанию: 1080)
+
+## 🔧 Команды
+
+- `npm run dev` - Запуск разработки
+- `npm run build` - Сборка проекта
+- `npm run deploy` - Деплой в Cloudflare
+- `npm run test` - Запуск тестов
+- `npm run typecheck` - Проверка типов
+
+## 🤝 Вклад в проект
+
+Проект создан для друзей и семьи. Если хотите внести свой вклад:
+
+1. Форкните репозиторий
+2. Создайте ветку для фичи
+3. Внесите изменения
+4. Создайте Pull Request
+
+## 📄 Лицензия
+
+MIT License - см. файл [LICENSE](LICENSE)
+
+## 🙏 Благодарности
+
+- [Cloudflare Orange](https://github.com/cloudflare/orange) - оригинальный проект
+- [Cloudflare Calls](https://developers.cloudflare.com/calls/) - WebRTC API
+- [OpenAI](https://openai.com/) - ИИ интеграция
+
+---
+
+**Сделано с ❤️ для друзей**

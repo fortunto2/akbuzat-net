@@ -51,27 +51,27 @@ export const SettingsDialog: FC<SettingsDialogProps> = ({
 			<Portal>
 				<DialogOverlay />
 				<DialogContent>
-					<DialogTitle>Settings</DialogTitle>
+					<DialogTitle>Настройки</DialogTitle>
 					<div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-4 mt-8 items-center">
 						<Label
 							className="text-base -mb-2 md:mb-0 text-left md:text-right"
 							htmlFor="camera"
 						>
-							Camera
+							Камера
 						</Label>
 						<VideoInputSelector id="camera" />
 						<Label
 							className="text-base -mb-2 md:mb-0 text-left md:text-right"
 							htmlFor="mic"
 						>
-							Mic
+							Микрофон
 						</Label>
 						<AudioInputSelector id="mic" />
 						<Label
 							className="text-base -mb-2 md:mb-0 text-left md:text-right"
 							htmlFor="blurBackground"
 						>
-							Blur Background
+							Размыть фон
 						</Label>
 						<div>
 							<Toggle
@@ -84,7 +84,7 @@ export const SettingsDialog: FC<SettingsDialogProps> = ({
 							className="text-base -mb-2 md:mb-0 text-left md:text-right"
 							htmlFor="suppressNoise"
 						>
-							Suppress Noise
+							Подавление шума
 						</Label>
 						<div>
 							<Toggle
