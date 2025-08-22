@@ -111,7 +111,9 @@ export default function Index() {
 							</span>
 							<span className="flex items-center gap-1">
 								<span className="w-2 h-2 bg-green-500 rounded-full"></span>
-								Cloudflare
+								<a href="https://docs.realtime.cloudflare.com/" className="hover:text-green-600 underline">
+									Cloudflare
+								</a>
 							</span>
 						</div>
 					</div>
