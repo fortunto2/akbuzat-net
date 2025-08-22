@@ -13,35 +13,49 @@ function isIOSSafari(): boolean {
 	return /iPad|iPhone|iPod/.test(userAgent) && /Safari/.test(userAgent) && !/CriOS|FxiOS|OPiOS|mercury/.test(userAgent)
 }
 
-// Detect if iOS Lockdown Mode might be active
+// Detect if Lockdown Mode or similar restrictions might be active
 function detectLockdownMode(): boolean {
 	try {
-		// Lockdown Mode disables many web APIs
-		// Check for presence of APIs that are typically disabled
+		// Check for presence of APIs that are typically disabled in Lockdown Mode
 		const hasWebGL = !!window.WebGLRenderingContext
 		const hasWebRTC = !!window.RTCPeerConnection
 		const hasServiceWorker = 'serviceWorker' in navigator
 		const hasNotifications = 'Notification' in window
+		const hasMediaDevices = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)
 		
-		// If multiple APIs are missing on iOS, likely Lockdown Mode
-		if (isIOSSafari()) {
-			const disabledAPIs = [
-				!hasWebGL,
-				!hasWebRTC,
-				!hasServiceWorker,
-				!hasNotifications
-			].filter(Boolean).length
-			
-			return disabledAPIs >= 2
+		// If multiple APIs are missing, likely Lockdown Mode or similar restrictions
+		const disabledAPIs = [
+			!hasWebGL,
+			!hasWebRTC,
+			!hasServiceWorker,
+			!hasNotifications,
+			!hasMediaDevices
+		].filter(Boolean).length
+		
+		// For Safari (iOS or macOS), if 3+ APIs are missing, likely Lockdown Mode
+		if (/Safari/.test(navigator.userAgent) && !/Chrome|Edge/.test(navigator.userAgent)) {
+			return disabledAPIs >= 3
 		}
 		
-		return false
+		// For any browser, if mediaDevices is missing along with other APIs, likely restrictions
+		return !hasMediaDevices && disabledAPIs >= 2
 	} catch {
 		return false
 	}
 }
 
+// Check if mediaDevices API is available
+function isMediaDevicesAvailable(): boolean {
+	return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)
+}
+
 async function getExistingPermissionState(): Promise<PermissionState> {
+	// Check if mediaDevices API is available first
+	if (!isMediaDevicesAvailable()) {
+		// If mediaDevices is not available, likely Lockdown Mode or similar restrictions
+		return 'denied'
+	}
+
 	// Safari on iOS doesn't support navigator.permissions.query for media devices
 	// We need to try a different approach
 	if (isIOSSafari()) {
@@ -92,15 +106,28 @@ export function EnsurePermissions(props: EnsurePermissionsProps) {
 					{isLockdownMode ? (
 						<div className="space-y-4">
 							<p className="text-sm text-gray-600">
-								Обнаружен режим защиты iOS (Lockdown Mode). Этот режим блокирует доступ к камере и микрофону для безопасности.
+								{isIOSSafari() 
+									? "Обнаружен режим защиты iOS (Lockdown Mode). Этот режим блокирует доступ к камере и микрофону для безопасности."
+									: "Обнаружены ограничения браузера. API камеры и микрофона недоступен."
+								}
 							</p>
 							<div className="bg-red-50 border border-red-200 rounded-lg p-4">
 								<p className="text-sm font-semibold text-red-800 mb-2">
-									🔒 Режим защиты и веб-камеры:
+									🔒 Возможные причины:
 								</p>
 								<ul className="text-xs text-red-700 space-y-1 text-left">
-									<li>• Режим защиты полностью блокирует WebRTC</li>
-									<li>• Камера и микрофон недоступны для веб-сайтов</li>
+									{isIOSSafari() ? (
+										<>
+											<li>• Режим защиты iOS активен</li>
+											<li>• WebRTC и медиа-API заблокированы</li>
+										</>
+									) : (
+										<>
+											<li>• Режим защиты Safari на macOS</li>
+											<li>• Ограничения безопасности браузера</li>
+											<li>• Корпоративные политики безопасности</li>
+										</>
+									)}
 									<li>• Это сделано для защиты от продвинутых атак</li>
 								</ul>
 							</div>
@@ -109,13 +136,24 @@ export function EnsurePermissions(props: EnsurePermissionsProps) {
 									🔧 Решения:
 								</p>
 								<ol className="text-xs text-blue-700 space-y-1 text-left">
-									<li>1. Временно отключите режим защиты в Настройки → Конфиденциальность и защита → Режим защиты</li>
-									<li>2. Или используйте другое устройство для видеозвонков</li>
-									<li>3. Можете участвовать только в чате (без видео/аудио)</li>
+									{isIOSSafari() ? (
+										<>
+											<li>1. Временно отключите режим защиты в Настройки → Конфиденциальность и защита → Режим защиты</li>
+											<li>2. Или используйте другое устройство для видеозвонков</li>
+										</>
+									) : (
+										<>
+											<li>1. Проверьте настройки Safari → Конфиденциальность</li>
+											<li>2. Отключите "Предотвращение межсайтового отслеживания" для этого сайта</li>
+											<li>3. Попробуйте другой браузер (Chrome, Firefox)</li>
+											<li>4. Обратитесь к администратору, если это рабочий компьютер</li>
+										</>
+									)}
+									<li>{isIOSSafari() ? "3" : "5"}. Можете участвовать только в чате (без видео/аудио)</li>
 								</ol>
 							</div>
 							<p className="text-xs text-gray-500">
-								⚠️ Отключение режима защиты снижает безопасность
+								⚠️ {isIOSSafari() ? "Отключение режима защиты" : "Изменение настроек безопасности"} снижает защиту
 							</p>
 						</div>
 					) : isMobile ? (
@@ -159,14 +197,17 @@ export function EnsurePermissions(props: EnsurePermissionsProps) {
 						<div className="space-y-6">
 							<div className="text-6xl mb-4">🛡️</div>
 							<h1 className="text-xl font-bold mb-4 text-red-600">
-								Режим защиты обнаружен
+								{isIOSSafari() ? "Режим защиты обнаружен" : "Ограничения браузера"}
 							</h1>
 							<div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
 								<p className="text-sm text-red-800 mb-2">
-									⚠️ Режим защиты iOS блокирует камеру и микрофон
+									⚠️ {isIOSSafari() ? "Режим защиты iOS" : "Браузер"} блокирует камеру и микрофон
 								</p>
 								<p className="text-xs text-red-700">
-									WebRTC и медиа-устройства недоступны в режиме защиты для безопасности активистов и журналистов.
+									{isIOSSafari() 
+										? "WebRTC и медиа-устройства недоступны в режиме защиты для безопасности активистов и журналистов."
+										: "API navigator.mediaDevices недоступен. Возможно активны ограничения безопасности или корпоративные политики."
+									}
 								</p>
 							</div>
 							<div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
@@ -174,8 +215,18 @@ export function EnsurePermissions(props: EnsurePermissionsProps) {
 									Варианты решения:
 								</p>
 								<ul className="text-xs text-blue-700 space-y-1 text-left">
-									<li>• Временно отключить режим защиты (снижает безопасность)</li>
-									<li>• Использовать другое устройство</li>
+									{isIOSSafari() ? (
+										<>
+											<li>• Временно отключить режим защиты (снижает безопасность)</li>
+											<li>• Использовать другое устройство</li>
+										</>
+									) : (
+										<>
+											<li>• Проверить настройки конфиденциальности Safari</li>
+											<li>• Попробовать Chrome или Firefox</li>
+											<li>• Обратиться к системному администратору</li>
+										</>
+									)}
 									<li>• Участвовать только в текстовом чате</li>
 								</ul>
 							</div>
@@ -214,6 +265,13 @@ export function EnsurePermissions(props: EnsurePermissionsProps) {
 					{!isLockdownMode && (
 						<Button
 							onClick={() => {
+								// Double-check that mediaDevices is available before calling
+								if (!isMediaDevicesAvailable()) {
+									console.error('navigator.mediaDevices is not available')
+									if (mountedRef.current) setPermissionState('denied')
+									return
+								}
+
 								navigator.mediaDevices
 									.getUserMedia({
 										video: true,
