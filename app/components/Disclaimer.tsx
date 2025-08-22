@@ -17,6 +17,10 @@ export const Disclaimer: FC<DisclaimerProps> = ({ className }) => {
 				<a className="underline hover:text-zinc-600" href="https://github.com/fortunto2/akbuzat-net">
 					GitHub репозиторий
 				</a>
+				{' • '}
+				<a className="underline hover:text-zinc-600" href="mailto:info@akbuzat.net">
+					info@akbuzat.net
+				</a>
 			</p>
 		</div>
 	)

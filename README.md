@@ -223,3 +223,5 @@ Apache License 2.0 - см. файл [LICENSE](LICENSE)
 ---
 
 **Сделано с ❤️ для друзей**
+
+📧 Вопросы и предложения: [info@akbuzat.net](mailto:info@akbuzat.net)
