@@ -24,6 +24,10 @@ class_name = "ChatRoom"
 tag = "v1" # Should be unique for each entry
 new_sqlite_classes = ["ChatRoom"]
 
+# Геоблокировка для санкционированных регионов
+[placement]
+mode = "smart"
+
 # The necessary secrets are:
 # - CALLS_APP_SECRET
 # To add secret, run `echo <VALUE> | wrangler secret put <NAME>`

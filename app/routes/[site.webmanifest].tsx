@@ -19,5 +19,10 @@ export const loader = async () => {
 		theme_color: '#ffffff',
 		background_color: '#ffffff',
 		display: 'standalone',
+		// iOS specific settings
+		start_url: '/',
+		scope: '/',
+		// Ensure proper HTTPS context
+		prefer_related_applications: false,
 	})
 }
