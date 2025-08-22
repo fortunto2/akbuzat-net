@@ -83,21 +83,26 @@ export const meta: MetaFunction = () => [
 export const links: LinksFunction = () => [
 	{ rel: 'stylesheet', href: tailwind },
 	{
+		rel: 'icon',
+		type: 'image/svg+xml',
+		href: '/favicon.svg',
+	},
+	{
 		rel: 'apple-touch-icon',
 		sizes: '180x180',
-		href: '/apple-touch-icon.png?v=orange-emoji',
+		href: '/apple-touch-icon.png?v=akbuzat',
 	},
 	{
 		rel: 'icon',
 		type: 'image/png',
 		sizes: '32x32',
-		href: '/favicon-32x32.png?v=orange-emoji',
+		href: '/favicon-32x32.png?v=akbuzat',
 	},
 	{
 		rel: 'icon',
 		type: 'image/png',
 		sizes: '16x16',
-		href: '/favicon-16x16.png?v=orange-emoji',
+		href: '/favicon-16x16.png?v=akbuzat',
 	},
 	{
 		rel: 'manifest',
@@ -106,12 +111,12 @@ export const links: LinksFunction = () => [
 	},
 	{
 		rel: 'mask-icon',
-		href: '/safari-pinned-tab.svg?v=orange-emoji',
-		color: '#faa339',
+		href: '/safari-pinned-tab.svg?v=akbuzat',
+		color: '#16a34a',
 	},
 	{
 		rel: 'shortcut icon',
-		href: '/favicon.ico?v=orange',
+		href: '/favicon.ico?v=akbuzat',
 	},
 ]
 
