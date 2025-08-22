@@ -8,12 +8,12 @@ import noiseSuppression from '~/utils/noiseSuppression'
 
 export const errorMessageMap = {
 	NotAllowedError:
-		'Permission was denied. Grant permission and reload to enable.',
-	NotFoundError: 'No device was found.',
-	NotReadableError: 'Device is already in use.',
-	OverconstrainedError: 'No device was found that meets constraints.',
-	DevicesExhaustedError: 'All devices failed to initialize.',
-	UnknownError: 'An unknown error occurred.',
+		'Доступ запрещен. Разрешите доступ и перезагрузите страницу.',
+	NotFoundError: 'Устройство не найдено.',
+	NotReadableError: 'Устройство уже используется.',
+	OverconstrainedError: 'Не найдено устройство, соответствующее требованиям.',
+	DevicesExhaustedError: 'Все устройства не удалось инициализировать.',
+	UnknownError: 'Произошла неизвестная ошибка.',
 }
 
 type UserMediaError = keyof typeof errorMessageMap

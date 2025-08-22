@@ -87,7 +87,7 @@ export function EnsurePermissions(props: EnsurePermissionsProps) {
 				<div className="mx-auto space-y-4 max-w-80 text-center">
 					<div className="text-4xl mb-4">{isLockdownMode ? "🛡️" : "🚫"}</div>
 					<h1 className="text-2xl font-bold">
-						{isLockdownMode ? "Режим защиты активен" : (isMobile ? "Доступ запрещен" : "Permission denied")}
+						{isLockdownMode ? "Режим защиты активен" : "Доступ запрещен"}
 					</h1>
 					{isLockdownMode ? (
 						<div className="space-y-4">
@@ -140,8 +140,7 @@ export function EnsurePermissions(props: EnsurePermissionsProps) {
 						</div>
 					) : (
 						<p>
-							You will need to go into your browser settings and manually
-							re-enable permission.
+							Вам необходимо зайти в настройки браузера и вручную разрешить доступ к камере и микрофону.
 						</p>
 					)}
 				</div>
@@ -208,8 +207,7 @@ export function EnsurePermissions(props: EnsurePermissionsProps) {
 					) : (
 						<div className="space-y-4">
 							<p className="mb-8">
-								In order to use Orange Meets, you will need to grant permission to
-								your camera and microphone. You will be prompted for access.
+								Для использования Orange Meets необходимо разрешить доступ к камере и микрофону. Вам будет показан запрос на доступ.
 							</p>
 						</div>
 					)}
@@ -232,7 +230,7 @@ export function EnsurePermissions(props: EnsurePermissionsProps) {
 							}}
 							className="w-full py-3 text-lg font-semibold"
 						>
-							{isMobile ? "🎥 Разрешить доступ" : "Allow access"}
+							🎥 Разрешить доступ
 						</Button>
 					)}
 				</div>
