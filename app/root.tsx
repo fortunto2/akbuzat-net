@@ -146,6 +146,12 @@ const Document: FC<{ children?: ReactNode }> = ({ children }) => {
 					content="#232325"
 					media="(prefers-color-scheme: dark)"
 				/>
+				{/* iOS PWA meta tags */}
+				<meta name="apple-mobile-web-app-capable" content="yes" />
+				<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+				<meta name="mobile-web-app-capable" content="yes" />
+				{/* PWA Description */}
+				<meta name="description" content="Modern video calling and collaboration platform" />
 				<Meta />
 				<Links />
 			</head>

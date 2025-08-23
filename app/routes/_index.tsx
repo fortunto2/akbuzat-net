@@ -120,14 +120,6 @@ export default function Index() {
 						</div>
 					</div>
 				</div>
-				
-				{/* Короткий дисклеймер */}
-				<div className="text-xs text-gray-500 text-center mt-3 px-2 space-y-1">
-					<p>Инструмент для приватных созвонов небольших групп. Не предназначен для деловой переписки компаний в РФ.</p>
-					<p>Контент не хранится на сервере; метаданные минимальны.</p>
-				</div>
-
-				
 				<Disclaimer className="pt-4 text-center" />
 			</div>
 		</div>
