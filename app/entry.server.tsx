@@ -2,6 +2,7 @@ import type { EntryContext } from '@remix-run/cloudflare'
 import { RemixServer } from '@remix-run/react'
 import { renderToString } from 'react-dom/server'
 import { RELEASE, SENTRY_DSN } from './utils/constants'
+import { generateNonce } from './utils/securityHeaders'
 
 export default function handleRequest(
 	request: Request,
@@ -10,12 +11,14 @@ export default function handleRequest(
 	remixContext: EntryContext
 ) {
 	try {
+		const nonce = generateNonce();
+		
 		let markup = renderToString(
 			<RemixServer context={remixContext} url={request.url} />
 		).replace(
 			'__CLIENT_ENV__',
 			`
-			<script>
+			<script nonce="${nonce}">
 				window.ENV = ${JSON.stringify({
 					RELEASE: RELEASE ?? 'dev',
 					SENTRY_DSN: SENTRY_DSN,
@@ -23,6 +26,9 @@ export default function handleRequest(
 			</script>
 		`
 		)
+		
+		// Store nonce in response headers for security headers middleware
+		responseHeaders.set('X-CSP-Nonce', nonce)
 		responseHeaders.set('Content-Type', 'text/html; charset=utf-8')
 		return new Response('<!DOCTYPE html>' + markup, {
 			status: responseStatusCode,

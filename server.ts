@@ -13,6 +13,7 @@ import { mode } from '~/utils/mode'
 import { queue } from './app/queue'
 
 import type { Env } from '~/types/Env'
+import { addSecurityHeaders, DEFAULT_SECURITY_CONFIG, DEVELOPMENT_SECURITY_CONFIG } from '~/utils/securityHeaders'
 
 const baseRemixHandler = createRequestHandler(build, mode)
 
@@ -103,8 +104,20 @@ const kvAssetHandler = createKvAssetHandler(JSON.parse(manifestJSON))
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext) {
 		const assetResponse = await kvAssetHandler(request, env, ctx, build)
-		if (assetResponse) return assetResponse
-		return remixHandler(request, { env, mode })
+		if (assetResponse) {
+			// Add security headers to static assets
+			const securityConfig = mode === 'development' ? DEVELOPMENT_SECURITY_CONFIG : DEFAULT_SECURITY_CONFIG
+			return addSecurityHeaders(assetResponse, securityConfig)
+		}
+		
+		// Handle Remix routes with security headers
+		const remixResponse = await remixHandler(request, { env, mode })
+		const securityConfig = mode === 'development' ? DEVELOPMENT_SECURITY_CONFIG : DEFAULT_SECURITY_CONFIG
+		
+		// Get nonce from response headers if available
+		const nonce = remixResponse.headers.get('X-CSP-Nonce')
+		
+		return addSecurityHeaders(remixResponse, securityConfig, nonce || undefined)
 	},
 	queue,
 }
