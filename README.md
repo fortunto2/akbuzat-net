@@ -215,9 +215,17 @@ npm run typecheck     # Проверка типов TypeScript
    - 🔐 **Safety Number** (номер безопасности для верификации)
    - 🔒 **Индикатор E2E шифрования**
 
-**Симулкаст и качество видео:**
-- **Network tab** → WebSocket → ищите multiple video streams (240p, 480p, 720p)
-- **WebRTC Stats** → проверьте adaptive bitrate switching
+**Проверка Simulcast:**
+1. **WebRTC Internals** (`chrome://webrtc-internals`) - ищите:
+   ```
+   outbound-rtp (frameHeight=720, ssrc=428359819)  # высокое качество
+   outbound-rtp (frameHeight=720, ssrc=961388367)  # дубликат/резерв
+   inbound-rtp (frameHeight=360, ssrc=144471357)   # адаптивное качество
+   ```
+
+2. **Множественные SSRC** = разные слои качества работают
+3. **Adaptive switching** - frameHeight меняется в зависимости от соединения
+4. **TURN over TLS** - должен показывать `candidateType=relay, relayProtocol=tls`
 
 ## 🔄 Синхронизация с upstream
 
