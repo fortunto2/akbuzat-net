@@ -17,64 +17,41 @@ export interface SecurityHeadersConfig {
  * Based on security audit recommendations for akbuzat.net
  */
 export const DEFAULT_SECURITY_CONFIG: SecurityHeadersConfig = {
-	// Content Security Policy - critical for XSS protection
-	csp: [
-		"default-src 'self'",
-		"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://browser-intake-datadoghq.eu",
-		"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-		"font-src 'self' https://fonts.gstatic.com",
-		"img-src 'self' data: blob: https:",
-		"media-src 'self' blob:",
-		"connect-src 'self' wss: https:",
-		"worker-src 'self' blob:",
-		"frame-ancestors 'none'",
-		"form-action 'self'",
-		"base-uri 'self'",
-		"object-src 'none'",
-		"upgrade-insecure-requests"
-	].join('; '),
+	// CSP temporarily disabled - was causing WebSocket connection issues
+	// Will re-enable with relaxed policy once WebSocket issues are resolved
+	// csp: "...",
 	
-	// Referrer Policy - prevents leaking sensitive data in referrer
+	// Referrer Policy - safe header, prevents leaking sensitive URLs
 	referrerPolicy: 'strict-origin-when-cross-origin',
 	
-	// X-Frame-Options - prevents clickjacking attacks
+	// X-Frame-Options - prevents clickjacking, very safe
 	xFrameOptions: 'DENY',
 	
-	// X-Content-Type-Options - prevents MIME type sniffing
-	xContentTypeOptions: 'nosniff',
+	// X-Content-Type-Options - prevents MIME sniffing (Cloudflare already sets this)
+	// xContentTypeOptions: 'nosniff',
 	
-	// Permissions Policy - restricts access to device features
+	// Permissions Policy - restricts device features, safe for video conferencing
 	permissionsPolicy: [
-		'camera=(self)',
-		'microphone=(self)',
-		'geolocation=()',
-		'payment=()',
-		'usb=()',
-		'magnetometer=()',
+		'camera=(self)',      // Allow camera for video calls
+		'microphone=(self)',  // Allow microphone for audio
+		'geolocation=()',     // Disable geolocation
+		'payment=()',         // Disable payment APIs
+		'usb=()',            // Disable USB access
+		'magnetometer=()',   // Disable sensors
 		'gyroscope=()',
 		'accelerometer=()'
 	].join(', '),
 	
-	// Cross-Origin Resource Policy - controls cross-origin access
+	// Cross-Origin Resource Policy - safe, prevents unwanted cross-origin access
 	crossOriginResourcePolicy: 'same-origin'
 };
-
-/**
- * Generate a random nonce for CSP
- */
-export function generateNonce(): string {
-	const array = new Uint8Array(16);
-	crypto.getRandomValues(array);
-	return btoa(String.fromCharCode(...array));
-}
 
 /**
  * Add security headers to a Response
  */
 export function addSecurityHeaders(
 	response: Response, 
-	config: SecurityHeadersConfig = DEFAULT_SECURITY_CONFIG,
-	nonce?: string
+	config: SecurityHeadersConfig = DEFAULT_SECURITY_CONFIG
 ): Response {
 	const newResponse = new Response(response.body, {
 		status: response.status,
@@ -83,19 +60,8 @@ export function addSecurityHeaders(
 	});
 
 	if (config.csp) {
-		let csp = config.csp;
-		// Add nonce to script-src if provided
-		if (nonce) {
-			csp = csp.replace(
-				/script-src 'self' 'unsafe-inline' 'unsafe-eval'/,
-				`script-src 'self' 'nonce-${nonce}'`
-			);
-		}
-		newResponse.headers.set('Content-Security-Policy', csp);
+		newResponse.headers.set('Content-Security-Policy', config.csp);
 	}
-	
-	// Remove temporary nonce header
-	newResponse.headers.delete('X-CSP-Nonce');
 	
 	if (config.referrerPolicy) {
 		newResponse.headers.set('Referrer-Policy', config.referrerPolicy);
@@ -127,7 +93,7 @@ export const DEVELOPMENT_SECURITY_CONFIG: SecurityHeadersConfig = {
 	...DEFAULT_SECURITY_CONFIG,
 	csp: [
 		"default-src 'self'",
-		"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://browser-intake-datadoghq.eu",
+		"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://browser-intake-datadoghq.eu https://static.cloudflareinsights.com",
 		"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
 		"font-src 'self' https://fonts.gstatic.com",
 		"img-src 'self' data: blob: https:",

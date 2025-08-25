@@ -103,21 +103,24 @@ const kvAssetHandler = createKvAssetHandler(JSON.parse(manifestJSON))
 
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext) {
+		// Skip security headers for WebSocket upgrades
+		if (request.headers.get('Upgrade')?.toLowerCase() === 'websocket') {
+			// Let WebSocket requests pass through to Remix without headers
+			return await remixHandler(request, { env, mode })
+		}
+
 		const assetResponse = await kvAssetHandler(request, env, ctx, build)
 		if (assetResponse) {
-			// Add security headers to static assets
+			// Add safe security headers to static assets (no CSP)
 			const securityConfig = mode === 'development' ? DEVELOPMENT_SECURITY_CONFIG : DEFAULT_SECURITY_CONFIG
 			return addSecurityHeaders(assetResponse, securityConfig)
 		}
 		
-		// Handle Remix routes with security headers
+		// Handle Remix routes with safe security headers (no CSP)
 		const remixResponse = await remixHandler(request, { env, mode })
 		const securityConfig = mode === 'development' ? DEVELOPMENT_SECURITY_CONFIG : DEFAULT_SECURITY_CONFIG
 		
-		// Get nonce from response headers if available
-		const nonce = remixResponse.headers.get('X-CSP-Nonce')
-		
-		return addSecurityHeaders(remixResponse, securityConfig, nonce || undefined)
+		return addSecurityHeaders(remixResponse, securityConfig)
 	},
 	queue,
 }
