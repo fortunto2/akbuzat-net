@@ -58,6 +58,16 @@ export type ServerMessage =
 			type: 'userLeftNotification'
 			id: string
 	  }
+	| {
+			type: 'callTimeWarning'
+			message: string
+			remaining: number
+	  }
+	| {
+			type: 'callTimeExpired'
+			message: string
+			remaining: number
+	  }
 
 export type ClientMessage =
 	| {

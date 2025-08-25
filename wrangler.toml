@@ -26,10 +26,21 @@ EXPERIMENTAL_SIMULCAST_ENABLED = "true"
 name = "rooms"
 class_name = "ChatRoom"
 
-# Indicate that you want the ChatRoom class to be callable as Durable Objects.
+[[durable_objects.bindings]]
+name = "rateLimiter"
+class_name = "RateLimiter"
+
+# Indicate that you want the ChatRoom and RateLimiter classes to be callable as Durable Objects.
 [[migrations]]
 tag = "v1" # Should be unique for each entry
-new_sqlite_classes = ["ChatRoom"]
+new_classes = ["ChatRoom"]
+
+[[migrations]]
+tag = "v3" # New migration for RateLimiter
+new_classes = ["RateLimiter"]
+
+ 
+
 
 # Геоблокировка для санкционированных регионов
 [placement]
@@ -38,3 +49,11 @@ mode = "smart"
 # The necessary secrets are:
 # - CALLS_APP_SECRET
 # To add secret, run `echo <VALUE> | wrangler secret put <NAME>`
+
+# Cron trigger for room cleanup (every 15 minutes)
+[triggers]
+crons = ["*/15 * * * *"]
+
+# wrangler.toml (wrangler v3.88.0^)
+[observability.logs]
+enabled = true

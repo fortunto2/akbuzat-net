@@ -13,7 +13,11 @@ import { mode } from '~/utils/mode'
 import { queue } from './app/queue'
 
 import type { Env } from '~/types/Env'
-import { addSecurityHeaders, DEFAULT_SECURITY_CONFIG, DEVELOPMENT_SECURITY_CONFIG } from '~/utils/securityHeaders'
+import {
+	addSecurityHeaders,
+	DEFAULT_SECURITY_CONFIG,
+	DEVELOPMENT_SECURITY_CONFIG,
+} from '~/utils/securityHeaders'
 
 const baseRemixHandler = createRequestHandler(build, mode)
 
@@ -97,6 +101,7 @@ export const createKvAssetHandler = (ASSET_MANIFEST: Record<string, string>) =>
 	}
 
 export { ChatRoom } from './app/durableObjects/ChatRoom.server'
+export { RateLimiter } from './app/durableObjects/RateLimiter.server'
 export { queue } from './app/queue'
 
 const kvAssetHandler = createKvAssetHandler(JSON.parse(manifestJSON))
@@ -112,15 +117,40 @@ export default {
 		const assetResponse = await kvAssetHandler(request, env, ctx, build)
 		if (assetResponse) {
 			// Add safe security headers to static assets (no CSP)
-			const securityConfig = mode === 'development' ? DEVELOPMENT_SECURITY_CONFIG : DEFAULT_SECURITY_CONFIG
+			const securityConfig =
+				mode === 'development'
+					? DEVELOPMENT_SECURITY_CONFIG
+					: DEFAULT_SECURITY_CONFIG
 			return addSecurityHeaders(assetResponse, securityConfig)
 		}
-		
+
 		// Handle Remix routes with safe security headers (no CSP)
 		const remixResponse = await remixHandler(request, { env, mode })
-		const securityConfig = mode === 'development' ? DEVELOPMENT_SECURITY_CONFIG : DEFAULT_SECURITY_CONFIG
-		
+		const securityConfig =
+			mode === 'development'
+				? DEVELOPMENT_SECURITY_CONFIG
+				: DEFAULT_SECURITY_CONFIG
+
 		return addSecurityHeaders(remixResponse, securityConfig)
 	},
+	
+	// Scheduled handler for room cleanup
+	async scheduled(event: ScheduledEvent, env: Env, _ctx: ExecutionContext) {
+		const { cleanupOldRooms } = require('~/utils/rateLimiter')
+		
+		try {
+			const result = await cleanupOldRooms(env)
+			console.log(`Room cleanup completed: cleaned ${result.cleaned} rooms`, result.rooms)
+			
+			// Optionally notify rooms that are about to be terminated
+			if (result.roomsToNotify.length > 0) {
+				console.log(`Rooms terminated due to 1-hour limit:`, result.roomsToNotify)
+				// Here you could send notifications to active rooms
+			}
+		} catch (error) {
+			console.error('Room cleanup failed:', error)
+		}
+	},
+	
 	queue,
 }

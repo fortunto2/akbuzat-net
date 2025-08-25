@@ -22,6 +22,10 @@ preview_id = "acb3952303514551a17b6fe627fb6953"
 name = "rooms"
 class_name = "ChatRoom"
 
+[[durable_objects.bindings]]
+name = "rateLimiter"
+class_name = "RateLimiter"
+
 [vars]
 CALLS_APP_ID = "f0ea263009299383d09d44b9fad5316c"
 TURN_SERVICE_ID = "124bb066f462e966159bc4eef4b42048"
@@ -48,11 +52,13 @@ database_id = "6b0eceef-c836-4ba7-aac2-fa9b6f702e3b"
 # Indicate that you want the ChatRoom and RateLimiter classes to be callable as Durable Objects.
 [[migrations]]
 tag = "v1" # Should be unique for each entry
-new_classes = ["ChatRoom", "RateLimiter"]
+new_classes = ["ChatRoom"]
 
 [[migrations]]
-tag = "v2"
-deleted_classes = ["RateLimiter"] 
+tag = "v3" # New migration for RateLimiter
+new_classes = ["RateLimiter"]
+
+ 
 
 [observability]
 enabled = true

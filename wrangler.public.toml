@@ -22,14 +22,20 @@ PUBLIC = "true"
 name = "rooms"
 class_name = "ChatRoom"
 
+[[durable_objects.bindings]]
+name = "rateLimiter"
+class_name = "RateLimiter"
+
 # Indicate that you want the ChatRoom and RateLimiter classes to be callable as Durable Objects.
 [[migrations]]
 tag = "v1" # Should be unique for each entry
-new_classes = ["ChatRoom", "RateLimiter"]
+new_classes = ["ChatRoom"]
 
 [[migrations]]
-tag = "v2"
-deleted_classes = ["RateLimiter"] 
+tag = "v3" # New migration for RateLimiter
+new_classes = ["RateLimiter"]
+
+ 
 
 # The necessary secrets are:
 # - CALLS_APP_SECRET

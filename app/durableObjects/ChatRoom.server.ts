@@ -23,6 +23,7 @@ import {
 	requestOpenAIService,
 	type SessionDescription,
 } from '~/utils/openai.server'
+import { checkCallDuration, markRoomActive, markRoomEmpty } from '~/utils/rateLimiter'
 
 const alarmInterval = 15_000
 const defaultOpenAIModelID = 'gpt-4o-realtime-preview-2024-10-01'
@@ -655,8 +656,59 @@ export class ChatRoom extends Server<Env> {
 	async alarm(): Promise<void> {
 		const meetingId = await this.getMeetingId()
 		log({ eventName: 'alarm', meetingId })
+		
+		// Check call duration limit (1 hour)
+		if (meetingId) {
+			try {
+				const durationCheck = await checkCallDuration(this.env, meetingId)
+				if (!durationCheck.allowed) {
+					// Call exceeded 1 hour limit - terminate all connections
+					log({ eventName: 'callDurationExceeded', meetingId, elapsed: durationCheck.elapsed })
+					
+					// Notify all users about time limit
+					this.broadcastMessage({
+						type: 'callTimeExpired',
+						message: 'Call time limit (1 hour) exceeded. The call will now end.',
+						remaining: 0
+					} satisfies ServerMessage)
+					
+					// Close all connections
+					for (const connection of this.getConnections()) {
+						connection.close(1000, 'Call time limit exceeded')
+					}
+					
+					// End the meeting
+					await this.endMeeting(meetingId)
+					return
+				} else if (durationCheck.remaining < 5 * 60 * 1000) {
+					// Less than 5 minutes remaining - warn users
+					this.broadcastMessage({
+						type: 'callTimeWarning',
+						message: `Call will end in ${Math.ceil(durationCheck.remaining / 60000)} minutes due to time limit.`,
+						remaining: durationCheck.remaining
+					} satisfies ServerMessage)
+				}
+			} catch (error) {
+				log({ eventName: 'callDurationCheckError', meetingId, error })
+			}
+		}
+		
 		const activeUserCount = await this.cleanupOldConnections()
 		await this.broadcastRoomState()
+		
+		// Mark room as empty or active for cleanup tracking
+		if (meetingId) {
+			try {
+				if (activeUserCount === 0) {
+					await markRoomEmpty(this.env, meetingId)
+				} else {
+					await markRoomActive(this.env, meetingId)
+				}
+			} catch (error) {
+				log({ eventName: 'roomStatusUpdateError', meetingId, error })
+			}
+		}
+		
 		if (activeUserCount !== 0) {
 			this.ctx.storage.setAlarm(Date.now() + alarmInterval)
 		}
