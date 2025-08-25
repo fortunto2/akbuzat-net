@@ -13,6 +13,7 @@ import {
 	ComputerDesktopIcon,
 	EllipsisVerticalIcon,
 	ExclamationCircleIcon,
+	ExclamationTriangleIcon,
 	HandRaisedIcon,
 	LockClosedIcon,
 	MicrophoneIcon,
@@ -21,9 +22,11 @@ import {
 	PhoneXMarkIcon,
 	PlusIcon,
 	ServerStackIcon,
+	ShieldCheckIcon,
 	SignalIcon,
 	SignalSlashIcon,
 	UserGroupIcon,
+	UsersIcon,
 	VideoCameraIcon,
 	VideoCameraSlashIcon,
 	WifiIcon,
@@ -60,10 +63,13 @@ const iconMap = {
 	SignalIcon,
 	SignalSlashIcon,
 	ExclamationCircleIcon,
+	ExclamationTriangleIcon,
 	ServerStackIcon,
+	ShieldCheckIcon,
 	ArrowDownOnSquareIcon,
 	ArrowUpOnSquareIcon,
 	WifiIcon,
+	UsersIcon,
 }
 
 interface IconProps {

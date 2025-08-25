@@ -23,6 +23,7 @@ import { PullAudioTracks } from '~/components/PullAudioTracks'
 import { RaiseHandButton } from '~/components/RaiseHandButton'
 import { SafetyNumberToast } from '~/components/SafetyNumberToast'
 import { ScreenshareButton } from '~/components/ScreenshareButton'
+import { SecurityStatusPanel } from '~/components/SecurityStatusPanel'
 import Toast, { useDispatchToast } from '~/components/Toast'
 import useBroadcastStatus from '~/hooks/useBroadcastStatus'
 import useIsSpeaking from '~/hooks/useIsSpeaking'
@@ -191,6 +192,10 @@ function JoinedRoom({ bugReportsEnabled }: { bugReportsEnabled: boolean }) {
 							/>
 						</div>
 					</div>
+
+					{/* Security Status Panel */}
+					<SecurityStatusPanel />
+
 					<Toast.Viewport className="absolute bottom-0 right-0" />
 				</div>
 				<div className="flex flex-wrap items-center justify-center gap-2 p-2 text-sm md:gap-4 md:p-5 md:text-base">

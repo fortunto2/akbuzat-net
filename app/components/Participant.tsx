@@ -126,6 +126,7 @@ export const Participant = forwardRef<
 	)
 
 	const packetLoss = useObservableAsValue(packetLoss$, 0)
+	const connectionQuality = getConnectionQuality(packetLoss)
 
 	const videoRef = useRef<HTMLVideoElement>(null)
 	const { videoHeight, videoWidth } = useVideoDimensions(videoRef)
@@ -278,7 +279,32 @@ export const Participant = forwardRef<
 							</OptionalLink>
 						</div>
 					)}
-					<div className="absolute top-0 right-0 flex gap-4 p-4">
+					<div className="absolute top-0 right-0 flex gap-1 p-2">
+						{/* Video Quality Indicator */}
+						{videoTrack && !isScreenShare && (
+							<Tooltip content={`Video: ${videoTrack.getSettings()?.height || 'Unknown'}p`}>
+								<div className="bg-black/60 rounded px-1.5 py-0.5 text-xs text-white font-mono">
+									{videoTrack.getSettings()?.height || '?'}p
+								</div>
+							</Tooltip>
+						)}
+						
+						{/* Connection Quality Indicator */}
+						{!isScreenShare && (
+							<ConnectionIndicator 
+								quality={connectionQuality}
+							/>
+						)}
+						
+						{/* Simulcast Layer Indicator */}
+						{simulcastEnabled && !isScreenShare && !isSelf && (
+							<Tooltip content={`Layer: ${preferredRid || 'auto'}`}>
+								<div className="bg-blue-600/80 rounded px-1 py-0.5 text-xs text-white">
+									{dataSaverMode ? 'LOW' : 'AUTO'}
+								</div>
+							</Tooltip>
+						)}
+						
 						{user.raisedHand && !isScreenShare && (
 							<Tooltip content="Hand is raised">
 								<div className="relative">
