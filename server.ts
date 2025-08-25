@@ -133,24 +133,30 @@ export default {
 
 		return addSecurityHeaders(remixResponse, securityConfig)
 	},
-	
+
 	// Scheduled handler for room cleanup
 	async scheduled(event: ScheduledEvent, env: Env, _ctx: ExecutionContext) {
 		const { cleanupOldRooms } = require('~/utils/rateLimiter')
-		
+
 		try {
 			const result = await cleanupOldRooms(env)
-			console.log(`Room cleanup completed: cleaned ${result.cleaned} rooms`, result.rooms)
-			
+			console.log(
+				`Room cleanup completed: cleaned ${result.cleaned} rooms`,
+				result.rooms
+			)
+
 			// Optionally notify rooms that are about to be terminated
 			if (result.roomsToNotify.length > 0) {
-				console.log(`Rooms terminated due to 1-hour limit:`, result.roomsToNotify)
+				console.log(
+					`Rooms terminated due to 1-hour limit:`,
+					result.roomsToNotify
+				)
 				// Here you could send notifications to active rooms
 			}
 		} catch (error) {
 			console.error('Room cleanup failed:', error)
 		}
 	},
-	
+
 	queue,
 }
