@@ -10,6 +10,13 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 CALLS_APP_ID="8b3c860a2c29fa281ea5cb516dc53852"
 TURN_SERVICE_ID="ec8a2466dbb8c53ed09435c7015a3928"
+PUBLIC = "true"
+E2EE_ENABLED = "true"
+MAX_WEBCAM_QUALITY_LEVEL = "720"
+MAX_WEBCAM_BITRATE = "800000"
+MAX_WEBCAM_FRAMERATE = "30"
+EXPERIMENTAL_SIMULCAST_ENABLED = "true"
+
 
 # Optional vars
 #OPENAI_MODEL_ENDPOINT="https://info-m1wjhthz-eastus2.openai.azure.com/openai/deployments/gpt-4o-realtime-preview/realtime?api-version=2024-10-01-preview"

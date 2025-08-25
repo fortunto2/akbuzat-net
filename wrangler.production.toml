@@ -27,7 +27,13 @@ CALLS_APP_ID = "700932c6384d6f4ba19838afa3ab93cd"
 TURN_SERVICE_ID = "53fa66872a8636170428abae9b049193"
 EXPERIMENTAL_SIMULCAST_ENABLED = "false"
 PUBLIC = "true"
-E2EE_ENABLED = "false"
+E2EE_ENABLED = "true"
+# Настройки качества видео для 720p среднего качества
+MAX_WEBCAM_QUALITY_LEVEL = "720"
+MAX_WEBCAM_BITRATE = "800000"
+MAX_WEBCAM_FRAMERATE = "30"
+EXPERIMENTAL_SIMULCAST_ENABLED = "true"
+
 
 [[queues.producers]]
  queue = "orange-meets-feedback-queue"
