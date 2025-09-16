@@ -7,6 +7,10 @@ export interface EnsurePermissionsProps {
 
 type PermissionState = 'denied' | 'granted' | 'prompt' | 'unable-to-determine'
 
+// LocalStorage key to persist user's explicit denial, so we can
+// keep showing the guidance banner across reloads until access is granted.
+const MIC_DENIED_STORAGE_KEY = 'permissions:microphone:denied'
+
 // Check if the browser is Safari on iOS
 function isIOSSafari(): boolean {
 	const userAgent = navigator.userAgent
@@ -82,11 +86,45 @@ export function EnsurePermissions(props: EnsurePermissionsProps) {
 	const mountedRef = useRef(true)
 
 	useEffect(() => {
-		getExistingPermissionState().then((result) => {
-			if (mountedRef.current) setPermissionState(result)
-		})
+		let permissionStatus: PermissionStatus | null = null
+
+		// Resolve current permission using Permissions API (when available)
+		// and reconcile with locally persisted denial state.
+		const init = async () => {
+			const result = await getExistingPermissionState()
+
+			// If user previously denied (we stored it) and the browser says
+			// 'prompt' (typical after reload on Chrome when not "blocked"),
+			// show persistent guidance until the user explicitly grants.
+			const locallyDenied = localStorage.getItem(MIC_DENIED_STORAGE_KEY) === 'true'
+			const effective = result === 'granted' ? 'granted' : locallyDenied ? 'denied' : result
+
+			if (mountedRef.current) setPermissionState(effective)
+
+			// Subscribe to permission changes when supported (Chrome/Edge)
+			try {
+				// Some browsers (Safari) throw here for media permissions
+				permissionStatus = await navigator.permissions.query({ name: 'microphone' as any })
+				permissionStatus.onchange = () => {
+					const state = permissionStatus?.state ?? 'unable-to-determine'
+					if (!mountedRef.current) return
+
+					// If permission flipped to granted, clear our persisted flag
+					if (state === 'granted') {
+						localStorage.removeItem(MIC_DENIED_STORAGE_KEY)
+					}
+					setPermissionState(state as PermissionState)
+				}
+			} catch {
+				// Ignore: not supported
+			}
+		}
+
+		init()
+
 		return () => {
 			mountedRef.current = false
+			if (permissionStatus) permissionStatus.onchange = null
 		}
 	}, [])
 
@@ -177,9 +215,50 @@ export function EnsurePermissions(props: EnsurePermissionsProps) {
 							</p>
 						</div>
 					) : (
-						<p>
-							Вам необходимо зайти в настройки браузера и вручную разрешить доступ к камере и микрофону.
-						</p>
+						<div className="space-y-4 text-left">
+							<p className="text-sm text-gray-700">
+								Доступ к микрофону и камере заблокирован для этого сайта. Пожалуйста, разрешите доступ:
+							</p>
+							<div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+								<p className="text-sm font-semibold text-orange-800 mb-2">Пошаговая инструкция:</p>
+								<ol className="text-xs text-orange-700 space-y-1 list-decimal list-inside">
+									<li>Нажмите на значок камеры/замка в адресной строке браузера.</li>
+									<li>Выберите «Разрешить» для камеры и микрофона (или «Всегда разрешать»).</li>
+									<li>Перезагрузите страницу, если требуется.</li>
+								</ol>
+							</div>
+							<p className="text-xs text-gray-500">
+								В Chrome/Edge значок находится справа от адреса. В Firefox — слева, в панели сайта. В Safari — Настройки для этого сайта.
+							</p>
+							<div>
+								<Button
+									onClick={() => {
+										if (!isMediaDevicesAvailable()) {
+											console.error('navigator.mediaDevices is not available')
+											if (mountedRef.current) setPermissionState('denied')
+											return
+										}
+										navigator.mediaDevices
+											.getUserMedia({ video: true, audio: true })
+											.then((ms) => {
+												// User explicitly granted; clear persisted denial
+												localStorage.removeItem(MIC_DENIED_STORAGE_KEY)
+												if (mountedRef.current) setPermissionState('granted')
+												ms.getTracks().forEach((t) => t.stop())
+											})
+											.catch((error) => {
+												console.error('Permission error:', error)
+												// Persist denial to keep banner visible across reloads
+												localStorage.setItem(MIC_DENIED_STORAGE_KEY, 'true')
+												if (mountedRef.current) setPermissionState('denied')
+											})
+								}}
+								className="w-full py-3 text-sm font-semibold mt-2"
+							>
+								🔁 Попробовать запросить доступ снова
+							</Button>
+							</div>
+						</div>
 					)}
 				</div>
 			</div>
@@ -278,11 +357,15 @@ export function EnsurePermissions(props: EnsurePermissionsProps) {
 										audio: true,
 									})
 									.then((ms) => {
+										// Clear persisted denial on success
+										localStorage.removeItem(MIC_DENIED_STORAGE_KEY)
 										if (mountedRef.current) setPermissionState('granted')
 										ms.getTracks().forEach((t) => t.stop())
 									})
 									.catch((error) => {
 										console.error('Permission error:', error)
+										// Persist denial to keep banner visible across reloads
+										localStorage.setItem(MIC_DENIED_STORAGE_KEY, 'true')
 										if (mountedRef.current) setPermissionState('denied')
 									})
 							}}
