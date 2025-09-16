@@ -1,4 +1,5 @@
 import { commitSession, getSession } from '~/session'
+import { parse as parseCookie } from 'cookie'
 import { ACCESS_AUTHENTICATED_USER_EMAIL_HEADER } from './constants'
 import { safeRedirect } from './safeReturnUrl'
 
@@ -31,6 +32,13 @@ export default async function getUsername(request: Request) {
 	const session = await getSession(request.headers.get('Cookie'))
 	const sessionUsername = session.get('username')
 	if (typeof sessionUsername === 'string') return sessionUsername
+
+	// Fallback: accept a plain `username` cookie if present (useful for quick checks)
+	const raw = request.headers.get('Cookie')
+	if (raw) {
+		const { username } = parseCookie(raw)
+		if (typeof username === 'string' && username.trim()) return username
+	}
 
 	return null
 }

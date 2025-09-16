@@ -45,6 +45,11 @@ export default function useRoom({
 				case 'partyserver-pong':
 				case 'e2eeMlsMessage':
 				case 'userLeftNotification':
+				case 'callTimeWarning':
+					// Optionally, display a UI notice or toast about remaining time
+					break
+				case 'callTimeExpired':
+					// Optionally, handle forced end of call (UI-level logic can be added)
 					// do nothing
 					break
 				default:

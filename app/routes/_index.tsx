@@ -12,11 +12,17 @@ import { ACCESS_AUTHENTICATED_USER_EMAIL_HEADER } from '~/utils/constants'
 import getUsername from '~/utils/getUsername.server'
 
 export const loader = async ({ request, context }: LoaderFunctionArgs) => {
-	const directoryUrl = context.USER_DIRECTORY_URL
-	const username = await getUsername(request)
-	invariant(username)
-	const usedAccess = request.headers.has(ACCESS_AUTHENTICATED_USER_EMAIL_HEADER)
-	return json({ username, usedAccess, directoryUrl })
+    const url = new URL(request.url)
+    const directoryUrl = (context as any).env?.USER_DIRECTORY_URL ?? (context as any).USER_DIRECTORY_URL
+    const username = await getUsername(request)
+    // If username is missing, redirect to set-username (avoid 500 from invariant)
+    if (!username) {
+        const redirectUrl = new URL('/set-username', url.origin)
+        redirectUrl.searchParams.set('return-url', url.toString())
+        return redirect(redirectUrl.toString())
+    }
+    const usedAccess = request.headers.has(ACCESS_AUTHENTICATED_USER_EMAIL_HEADER)
+    return json({ username, usedAccess, directoryUrl })
 }
 
 export const action: ActionFunction = async ({ request }) => {

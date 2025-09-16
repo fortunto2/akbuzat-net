@@ -33,11 +33,11 @@ class_name = "RateLimiter"
 # Indicate that you want the ChatRoom and RateLimiter classes to be callable as Durable Objects.
 [[migrations]]
 tag = "v1" # Should be unique for each entry
-new_classes = ["ChatRoom"]
+new_sqlite_classes = ["ChatRoom"]
 
 [[migrations]]
 tag = "v3" # New migration for RateLimiter
-new_classes = ["RateLimiter"]
+new_sqlite_classes = ["RateLimiter"]
 
  
 

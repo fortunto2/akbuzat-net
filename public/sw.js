@@ -1,7 +1,6 @@
 // Service Worker for Akbuzat.net PWA
-const CACHE_NAME = 'akbuzat-v1';
+const CACHE_NAME = 'akbuzat-v2';
 const STATIC_CACHE_URLS = [
-  '/',
   '/favicon.svg',
   '/favicon.ico',
   '/android-chrome-192x192.png',
@@ -64,43 +63,37 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request)
-      .then((cachedResponse) => {
-        // Return cached version if available
-        if (cachedResponse) {
-          return cachedResponse;
+  // Never intercept top-level navigations; let the network handle them
+  if (event.request.mode === 'navigate') {
+    return;
+  }
+
+  event.respondWith((async () => {
+
+    // For non-navigation requests, prefer cache, then network, and cache static assets
+    const cachedResponse = await caches.match(event.request);
+    if (cachedResponse) return cachedResponse;
+
+    try {
+      const response = await fetch(event.request);
+      if (response && response.status === 200 && response.type === 'basic') {
+        if (/\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$/.test(event.request.url)) {
+          const cache = await caches.open(CACHE_NAME);
+          cache.put(event.request, response.clone());
         }
+      }
+      return response;
+    } catch (err) {
+      return cachedResponse; // last resort
+    }
+  })());
+});
 
-        // Otherwise fetch from network
-        return fetch(event.request)
-          .then((response) => {
-            // Don't cache if not a valid response
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-
-            // Clone the response
-            const responseToCache = response.clone();
-
-            // Cache static assets (JS, CSS, images)
-            if (event.request.url.match(/\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$/)) {
-              caches.open(CACHE_NAME)
-                .then((cache) => {
-                  cache.put(event.request, responseToCache);
-                });
-            }
-
-            return response;
-          })
-          .catch(() => {
-            // If network fails, try to serve offline fallback for pages
-            if (event.request.mode === 'navigate') {
-              return caches.match('/');
-            }
-          });
-      })
-  );
+// Allow clients to request immediate activation of a new SW
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 // Handle background sync for when connection is restored

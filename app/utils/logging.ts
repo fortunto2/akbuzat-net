@@ -4,7 +4,22 @@ export type LogEvent =
 	| {
 			eventName: 'onStart'
 			meetingId?: string
-	  }
+  }
+  | {
+      eventName: 'callDurationExceeded'
+      meetingId?: string
+      elapsed: number
+    }
+  | {
+      eventName: 'callDurationCheckError'
+      meetingId?: string
+      error: unknown
+    }
+  | {
+      eventName: 'roomStatusUpdateError'
+      meetingId?: string
+      error: unknown
+    }
 	| {
 			eventName: 'alarm'
 			meetingId?: string

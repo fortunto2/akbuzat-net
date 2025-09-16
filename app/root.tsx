@@ -33,6 +33,12 @@ function addOneDay(date: Date): Date {
 
 export const loader = async ({ request, context }: LoaderFunctionArgs) => {
 	const url = new URL(request.url)
+
+	// Canonicalize host: ensure apex domain to avoid host-only cookie mismatch
+	if (url.hostname === 'www.akbuzat.net') {
+		url.hostname = 'akbuzat.net'
+		throw safeRedirect(url.toString(), { status: 308 })
+	}
 	const username = await getUsername(request)
 	if (!username && url.pathname !== '/set-username') {
 		const redirectUrl = new URL(url)
