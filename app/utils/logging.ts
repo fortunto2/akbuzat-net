@@ -8,7 +8,7 @@ export type LogEvent =
   | {
       eventName: 'callDurationExceeded'
       meetingId?: string
-      elapsed: number
+      elapsed?: number
     }
   | {
       eventName: 'callDurationCheckError'
